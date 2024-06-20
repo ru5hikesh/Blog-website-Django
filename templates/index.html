@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      padding: 0;
+      margin: 0;
+      background: #e0e0e0;
+      transition: background-color 0.5s;
+    }
+
+    body.reloading {
+      background-color: #ffcc00;
+    }
+
+    .header {
+      padding: 20px;
+      font-size: 40px;
+      text-align: center;
+      background: linear-gradient(90deg, #ff7e5f, #feb47b);
+      background-size: 200% 200%;
+      animation: gradientAnimation 5s ease infinite;
+      color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .navbar {
+      overflow: hidden;
+      background-color: #444;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+    }
+
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+      font-size: 1.5em;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -16px;
+    }
+
+    .leftcolumn {
+      flex: 75%;
+      padding: 16px;
+    }
+
+    .rightcolumn {
+      flex: 25%;
+      padding: 16px;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.3s, transform 0.3s, border 0.3s;
+      border-radius: 10px;
+    }
+
+    .card:hover {
+      border: 2px solid #ffa500;
+      /* Orange color */
+      box-shadow: 0 8px 16px 0 rgba(255, 165, 0, 0.5);
+      /* Orange glow */
+    }
+
+    .card.fullscreen {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1.2);
+      width: 60%;
+      height: 60%;
+      z-index: 1000;
+      overflow: auto;
+      border: 2px solid #ffffff;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff7e5f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .footer {
+      padding: 20px;
+      text-align: center;
+      background: #444;
+      color: white;
+      margin-top: 20px;
+      box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    @media screen and (max-width: 800px) {
+
+      .leftcolumn,
+      .rightcolumn {
+        width: 100%;
+        padding: 0;
+      }
+    }
+
+    a {
+      color: #ff7e5f;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    .title-link {
+      text-decoration: none;
+    }
+
+    .title-link:hover {
+      text-decoration: underline;
+    }
+
+    h2,
+    h3,
+    h5 {
+      margin: 0 0 10px;
+    }
+
+    p {
+      margin: 0 0 20px;
+    }
+
+    .card h2 {
+      color: #ff7e5f;
+    }
+
+    .card h5,
+    .card p {
+      color: black;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h2>Rushi's Blog</h2>
+  </div>
+
+  <div class="navbar">
+    <a href="#home" title="Rushi's Blog Website" onclick="glowAndRefresh(this)">Home</a>
+    <a href="#contact" onclick="scrollToFooter()">Contact</a>
+  </div>
+
+  <div id="refresh-line" style="height: 2px; background: #ffcc00; width: 0; transition: width 0.5s;"></div>
+
+  <div class="row">
+    <div class="leftcolumn">
+      {% for post in posts reversed %}
+      <div class="card">
+        <a href="javascript:void(0);" class="title-link" onclick="enlargeCard(this)">
+          <h2>{{post.title}}</h2>
+        </a>
+        <h5>{{post.created_at}}</h5>
+        <p>{{post.body}}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="rightcolumn">
+      <div class="card">
+        <h2>About Me</h2>
+        <p>Hello! I'm Rushi, a Computer Science engineering student passionate about technology and coding. I enjoy
+          exploring new programming languages, working on innovative projects, and sharing my knowledge through this
+          blog. My interests include web development, artificial intelligence, and open-source contributions. Join me on
+          my journey as I delve into the world of computer science and beyond!</p>
+      </div>
+      <div class="card">
+        <h3>Popular Post</h3>
+        <p><a href="/post/{{ posts.0.id }}">{{ posts.0.title }}</a></p>
+      </div>
+      <div class="card">
+        <h3>LinkedIn</h3>
+        <p><a href="https://www.linkedin.com/in/rushikesh-kolge-323094219/" target="_blank">Rushikesh Kolge</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <h2>Contact - rushikesh3824@gmail.com</h2>
+  </div>
+
+  <script>
+    function enlargeCard(link) {
+      var card = link.closest('.card');
+      var newCard = card.cloneNode(true);
+      newCard.classList.add('fullscreen');
+
+      var closeButton = document.createElement('button');
+      closeButton.innerText = 'Close';
+      closeButton.classList.add('close-btn');
+      closeButton.onclick = function () {
+        newCard.remove();
+      };
+      newCard.appendChild(closeButton);
+
+      document.body.appendChild(newCard);
+      document.addEventListener('click', function (event) {
+        if (!newCard.contains(event.target) && !link.contains(event.target)) {
+          newCard.remove();
+        }
+      }, { once: true });
+    }
+
+    function scrollToFooter() {
+      var footer = document.querySelector('.footer');
+      footer.scrollIntoView({ behavior: 'smooth' });
+      footer.style.transition = 'font-size 1s';
+      footer.style.fontSize = '1.1em';
+      setTimeout(function () {
+        footer.style.fontSize = '';
+      }, 1000);
+    }
+
+    function glowAndRefresh(link) {
+      link.style.transition = 'box-shadow 0.5s';
+      link.style.boxShadow = '0 0 10px 5px #ffcc00';
+      var refreshLine = document.getElementById('refresh-line');
+      refreshLine.style.width = '100%';
+      setTimeout(function () {
+        location.reload();
+      }, 500);
+    }
+
+    window.addEventListener('load', function () {
+      document.body.classList.add('reloading');
+      setTimeout(function () {
+        document.body.classList.remove('reloading');
+      }, 2000);
+    });
+  </script>
+
+</body>
+
+</html>
